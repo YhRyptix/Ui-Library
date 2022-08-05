@@ -1,13 +1,3 @@
-[![discord server](https://media.discordapp.net/attachments/929706675022233640/933723518321967144/banner.jpg)](https://discord.gg/jaunk8nhN5)
-
-# Mercury
-
-Mercury is a free and open sourced Roblox UI library.
-
-- https://discord.gg/jaunk8nhN5
-- https://discord.com/users/480805591221010456
-- https://discord.com/users/452466034822217739
-
 ## Loadstring
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/deeeity/mercury-lib/master/src.lua"))()
@@ -24,18 +14,15 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/deeeity/mercury-lib/m
 - Notifications
 - Prompts
 
-... more to be added.
-
-Created by [Deity#0228] and [Abstract#8007]
 
 ## Documentation
 
-### Get the Library
+### Library
 ```lua
 local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/deeeity/mercury-lib/master/src.lua"))()
 ```
 
-### Create the GUI
+### GUI
 ```lua
 local GUI = Mercury:Create{
     Name = "Mercury",
@@ -45,7 +32,7 @@ local GUI = Mercury:Create{
 }
 ```
 
-### Tabs
+### Tab
 ```lua
 local Tab = GUI:Tab{
 	Name = "New Tab",
@@ -53,7 +40,7 @@ local Tab = GUI:Tab{
 }
 ```
 
-### Buttons
+### Button
 ```lua
 Tab:Button{
 	Name = "Button",
@@ -62,7 +49,7 @@ Tab:Button{
 }
 ```
 
-### Toggles
+### Toggle
 ```lua
 Tab:Toggle{
 	Name = "Toggle",
@@ -72,7 +59,7 @@ Tab:Toggle{
 }
 ```
 
-### Textboxes
+### Textbox
 ```lua
 Tab:Textbox{
 	Name = "Textbox",
@@ -80,7 +67,7 @@ Tab:Textbox{
 }
 ```
 
-### Dropdowns
+### Dropdown
 ```lua
 local MyDropdown = Tab:Dropdown{
 	Name = "Dropdown",
@@ -106,7 +93,7 @@ MyDropdown:RemoveItems({
 MyDropdown:Clear()
 ```
 
-### Sliders
+### Slider
 ```lua
 Tab:Slider{
 	Name = "Slider",
@@ -117,7 +104,7 @@ Tab:Slider{
 }
 ```
 
-### Keybinds
+### Keybind
 ```lua
 Tab:Keybind{
 	Name = "Keybind",
@@ -159,15 +146,3 @@ Tab:ColorPicker{
 	Style = Mercury.ColorPickerStyles.Legacy,
 	Callback = function(color) end
 }
-```
-
-### Credit
-```lua
-GUI:Credit{
-	Name = "Creditor's name",
-	Description = "Helped with the script",
-	V3rm = "link/name",
-	Discord = "helo#1234"
-}
-```
-**PLEASE NOTE THAT THE LOWER- AND UPPERCASE LETTERS DON'T MATTER WHEN CALLING LIBRARY FUNCTIONS.**
