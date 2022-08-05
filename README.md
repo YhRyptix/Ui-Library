@@ -9,7 +9,7 @@ local GUI = Mercury:Create{
     Name = "Mercury",
     Size = UDim2.fromOffset(600, 400),
     Theme = Mercury.Themes.Dark,
-    Link = "https://github.com/deeeity/mercury-lib"
+    Link = "@✞Ryptix#4473"
 }
 ```
 
@@ -103,7 +103,7 @@ GUI:Prompt{
 	Buttons = {
 		ok = function()
 			return true
-		end
+		end,
 		no = function()
 			return false
 		end
@@ -115,7 +115,7 @@ GUI:Prompt{
 ```lua
 GUI:Notification{
 	Title = "Alert",
-	Text = "You shall bump the thread on V3rmillion!",
+	Text = "",
 	Duration = 3,
 	Callback = function() end
 }
