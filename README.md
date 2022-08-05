@@ -1,22 +1,3 @@
-## Loadstring
-```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/deeeity/mercury-lib/master/src.lua"))()
-```
-
-## Features:
-- Customizable (Themes)
-- Browser-Like navigation
-- Buttons
-- Sliders
-- Dropdowns
-- Inputs
-- Color Picker
-- Notifications
-- Prompts
-
-
-## Documentation
-
 ### Library
 ```lua
 local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/deeeity/mercury-lib/master/src.lua"))()
