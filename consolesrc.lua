@@ -273,7 +273,7 @@ function Console:Window(consoledebugger)
     ConsoleLog:AddCommand("help", function(console)
         console:Prompt({
             Title = "Available commands:",
-            Type = "nofitication"
+            Type = "notification"
         })
         console:Prompt({
             Title = "clear - Clears the console",
@@ -304,7 +304,7 @@ function Console:Window(consoledebugger)
         local SuccessTitle = "["..tostring(Time).."]".." {Success} : "..tostring(PromptTitle)
         local FailTitle = "["..tostring(Time).."]".." {Error} : "..tostring(PromptTitle)
         local WarningTitle = "["..tostring(Time).."]".." {Warning} : "..tostring(PromptTitle)
-        local NofiticationTitle = "["..tostring(Time).."]".." {Nofitication} : "..tostring(PromptTitle)
+        local notificationTitle = "["..tostring(Time).."]".." {notification} : "..tostring(PromptTitle)
 
         local TextLabel = Instance.new("TextLabel")
         TextLabel.Parent = ConsoleContainer
@@ -331,8 +331,8 @@ function Console:Window(consoledebugger)
         elseif Type == "warning" then
             TextLabel.Text = tostring(WarningTitle)
             TextLabel.TextColor3 = Color3.fromRGB(202, 156, 107)
-        elseif Type == "nofitication" then
-            TextLabel.Text = tostring(NofiticationTitle)
+        elseif Type == "notification" then
+            TextLabel.Text = tostring(notificationTitle)
             TextLabel.TextColor3 = Color3.fromRGB(121, 130, 255)
         end
         
@@ -378,7 +378,7 @@ function Console:Window(consoledebugger)
                 if textToPrint ~= "" then
                     ConsoleLog:Prompt({
                         Title = textToPrint,
-                        Type = "nofitication"
+                        Type = "notification"
                     })
                 else
                     ConsoleLog:Prompt({
