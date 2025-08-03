@@ -304,7 +304,7 @@ function Console:Window(consoledebugger)
         local SuccessTitle = "["..tostring(Time).."]".." {Success} : "..tostring(PromptTitle)
         local FailTitle = "["..tostring(Time).."]".." {Error} : "..tostring(PromptTitle)
         local WarningTitle = "["..tostring(Time).."]".." {Warning} : "..tostring(PromptTitle)
-        local notificationTitle = "["..tostring(Time).."]".." {notification} : "..tostring(PromptTitle)
+        local notificationTitle = "["..tostring(Time).."]".." {Notification} : "..tostring(PromptTitle)
 
         local TextLabel = Instance.new("TextLabel")
         TextLabel.Parent = ConsoleContainer
