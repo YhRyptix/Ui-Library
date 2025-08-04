@@ -311,12 +311,14 @@ function Console:Window(consoledebugger)
         TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         TextLabel.BackgroundTransparency = 1.000
         TextLabel.BorderSizePixel = 0
-        TextLabel.Size = UDim2.new(0, 580, 0, 12)
+        TextLabel.Size = UDim2.new(0, 580, 0, 0) -- height will grow automatically
         TextLabel.ZIndex = 4
         TextLabel.Font = Enum.Font.Code
         TextLabel.Text = "Nil"
         TextLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
         TextLabel.TextSize = 14.000
+        TextLabel.TextWrapped = true
+        TextLabel.AutomaticSize = Enum.AutomaticSize.Y
         TextLabel.TextXAlignment = Enum.TextXAlignment.Left
 
         if Type == "default" then
@@ -411,3 +413,13 @@ function Console:Window(consoledebugger)
 end
 
 return Console
+
+
+
+
+local ConsoleLog = Console:Window({
+    Title = "Ryp Console I guess. V2",
+    Position = UDim2.new(0.5, 0, 0.5, 0),
+    DragSpeed = 12
+})
+
