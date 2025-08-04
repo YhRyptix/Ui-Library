@@ -415,11 +415,3 @@ end
 return Console
 
 
-
-
-local ConsoleLog = Console:Window({
-    Title = "Ryp Console I guess. V2",
-    Position = UDim2.new(0.5, 0, 0.5, 0),
-    DragSpeed = 12
-})
-
