@@ -2062,6 +2062,16 @@ local Library do
                 else
                     Items["Columns"]:Tween(nil, {Position = Bool and UDim2New(0, 0, 0, 55) or UDim2New(0, 0, 1, 0)})
                 end
+
+                -- Auto-select the first SubPage that belongs to this Page when the Page is opened
+                if Bool then
+                    for _, Sub in Page.Window.SubPages do
+                        if Sub.Page == Page then
+                            Sub:Turn(true)
+                            break
+                        end
+                    end
+                end
             end)            
         end
 
