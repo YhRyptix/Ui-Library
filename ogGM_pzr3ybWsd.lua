@@ -3200,7 +3200,11 @@ local Library do
             Library.Flags[Slider.Flag] = Slider.Value
 
             Items["Accent"]:Tween(TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2New((Slider.Value - Slider.Min) / (Slider.Max - Slider.Min), 0, 1, 0)})
-            Items["Value"].Instance.Text = StringFormat("%s%s", tostring(Slider.Value), Slider.Suffix)
+            local displayVal = Slider.Value
+            if not displayVal or displayVal ~= displayVal then
+                displayVal = Slider.Default or Slider.Min
+            end
+            Items["Value"].Instance.Text = StringFormat("%s%s", tostring(displayVal), Slider.Suffix)
 
             if Slider.Callback then 
                 Library:SafeCall(Slider.Callback, Slider.Value)
