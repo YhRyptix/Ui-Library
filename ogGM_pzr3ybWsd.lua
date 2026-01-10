@@ -3190,7 +3190,12 @@ local Library do
         end
 
         function Slider:Set(Value)
-            Slider.Value = MathClamp(Library:Round(Value, Slider.Decimals), Slider.Min, Slider.Max)
+            local num = tonumber(Value)
+            if not num or num ~= num or num == math.huge or num == -math.huge then
+                num = Slider.Default or Slider.Min
+            end
+
+            Slider.Value = MathClamp(Library:Round(num, Slider.Decimals), Slider.Min, Slider.Max)
 
             Library.Flags[Slider.Flag] = Slider.Value
 
