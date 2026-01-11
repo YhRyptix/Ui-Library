@@ -2629,13 +2629,13 @@ local Library do
 
                 Name = Data.Name or Data.name or "Keybind",
                 Flag = Data.Flag or Data.flag or Library:NextFlag(),
-                Default = Data.Default or Data.default or nil, -- start unbound by default
+                Default = Data.Default or Data.default or Enum.KeyCode.RightShift,
                 Mode = Data.Mode or Data.mode or "Toggle",
                 Callback = Data.Callback or Data.callback or function() end,
 
                 Key = nil,
                 Picking = false,
-                Value = "None",
+                Value = "",
                 Toggled = false,
                 Count = Toggle.Count,
             }
@@ -2649,7 +2649,7 @@ local Library do
                     FontFace = Library.Font,
                     TextColor3 = FromRGB(255, 255, 255),
                     TextTransparency = 0,
-                    Text = "Unbound",
+                    Text = "None",
                     Name = "\0",
                     BorderColor3 = FromRGB(0, 0, 0),
                     Size = UDim2New(0, 0, 0, 15),
@@ -2799,11 +2799,7 @@ local Library do
                     local InputBegan 
                     InputBegan = UserInputService.InputBegan:Connect(function(Input)
                         if Input.UserInputType == Enum.UserInputType.Keyboard then 
-                            if Input.KeyCode == Enum.KeyCode.Escape then
-                                Keybind:Set(nil)
-                            else
-                                Keybind:Set(Input.KeyCode)
-                            end
+                            Keybind:Set(Input.KeyCode)
                         else
                             Keybind:Set(Input.UserInputType)
                         end
@@ -3753,12 +3749,12 @@ local Library do
 
             Name = Data.Name or Data.name or "Keybind",
             Flag = Data.Flag or Data.flag or Library:NextFlag(),
-            Default = Data.Default or Data.default or nil, -- start unbound by default
+            Default = Data.Default or Data.default or Enum.KeyCode.RightShift,
             Callback = Data.Callback or Data.callback or function() end,
             Mode = Data.Mode or Data.mode or "Toggle",
 
             Key = nil,
-            Value = "None",
+            Value = "",
             Toggled = false,
             Picking = false
         }
@@ -3823,7 +3819,7 @@ local Library do
                 FontFace = Library.Font,
                 TextColor3 = FromRGB(255, 255, 255),
                 BorderColor3 = FromRGB(255, 255, 255),
-                Text = "Unbound",
+                Text = "None",
                 Name = "\0",
                 BorderSizePixel = 0,
                 Size = UDim2New(1, -16, 1, 0),
@@ -3845,28 +3841,6 @@ local Library do
         end
 
         function Keybind:Set(Key)
-            -- nil means unbind
-            if Key == nil then
-                Keybind.Key = nil
-                Keybind.Value = "None"
-                Items["Value"].Instance.Text = "Unbound"
-
-                Library.Flags[Keybind.Flag] = {
-                    Mode = Keybind.Mode,
-                    Key = nil,
-                    Toggled = Keybind.Toggled
-                }
-
-                if Keybind.Callback then 
-                    Library:SafeCall(Keybind.Callback, Keybind.Toggled)
-                end
-
-                Keybind.Picking = false 
-                Items["Value"]:ChangeItemTheme({TextColor3 = "Text"})
-                Items["Value"]:Tween(nil, {TextColor3 = Library.Theme.Text})
-                return
-            end
-
             if StringFind(tostring(Key), "Enum") then 
                 Keybind.Key = tostring(Key)
 
@@ -3985,12 +3959,7 @@ local Library do
             local InputBegan 
             InputBegan = UserInputService.InputBegan:Connect(function(Input)
                 if Input.UserInputType == Enum.UserInputType.Keyboard then 
-                    -- Escape should unbind instead of binding to Escape
-                    if Input.KeyCode == Enum.KeyCode.Escape then
-                        Keybind:Set(nil)
-                    else
-                        Keybind:Set(Input.KeyCode)
-                    end
+                    Keybind:Set(Input.KeyCode)
                 else
                     Keybind:Set(Input.UserInputType)
                 end
@@ -3998,9 +3967,6 @@ local Library do
                 InputBegan:Disconnect()
                 InputBegan = nil
             end)
-
-        -- Ensure pressing Escape when not picking does not bind (unbound is represented by Key==nil)
-        
         end)
 
         Library:Connect(UserInputService.InputBegan, function(Input)
