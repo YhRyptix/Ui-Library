@@ -62,7 +62,7 @@ local Library do
     Library = {
         Flags = { },
 
-        MenuKeybind = tostring(Enum.KeyCode.Z), 
+        MenuKeybind = tostring(Enum.KeyCode.RightShift), 
 
         Tween = {
             Time = 0.25,
