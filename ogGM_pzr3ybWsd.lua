@@ -1001,6 +1001,15 @@ local Library do
                 end
             end
         end
+
+        if Theme == "Image" then
+            for _, Page in ipairs(self.Pages) do
+                local Icon = Page.Items and Page.Items["Inactive"]
+                if Icon and Icon.Instance and Icon.Instance:IsA("ImageButton") then
+                    Icon.Instance.ImageColor3 = Color
+                end
+            end
+        end
     end
 
     Library.GetTransparencyPropertyFromItem = function(self, Item)
