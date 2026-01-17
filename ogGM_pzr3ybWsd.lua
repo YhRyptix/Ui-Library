@@ -2109,7 +2109,13 @@ local Library do
         Window.Items = Items
 
         local WindowObject = setmetatable(Window, Library)
-        Library:AddDefaultSettings(WindowObject)
+
+        Library:Thread(function()
+            task.wait(0.1)
+            pcall(function()
+                Library:AddDefaultSettings(WindowObject)
+            end)
+        end)
 
         WindowObject:SetOpen(true)
         return WindowObject
