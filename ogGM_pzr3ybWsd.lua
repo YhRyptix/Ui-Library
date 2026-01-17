@@ -1727,6 +1727,15 @@ local Library do
                 BackgroundColor3 = FromRGB(255, 255, 255)
             }) 
 
+            local LogoImage = Window.Logo
+            if type(LogoImage) == "string" then
+                if not StringFind(LogoImage, "^rbxassetid://") and not StringFind(LogoImage, "^rbxasset://") then
+                    LogoImage = "rbxassetid://" .. LogoImage
+                end
+            else
+                LogoImage = "rbxassetid://" .. tostring(LogoImage)
+            end
+
             Items["Logo"] = Instances:Create("ImageLabel", {
                 Parent = Items["Sidebar"].Instance,
                 ScaleType = Enum.ScaleType.Fit,
@@ -1734,7 +1743,7 @@ local Library do
                 Name = "\0",
                 Size = UDim2New(0, 45, 0, 45),
                 AnchorPoint = Vector2New(0.5, 0),
-                Image = "rbxassetid://" .. Window.Logo,
+                Image = LogoImage,
                 BackgroundTransparency = 1,
                 Position = UDim2New(0.5, 0, 0, 12),
                 ZIndex = 3,
