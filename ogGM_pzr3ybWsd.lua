@@ -1669,6 +1669,7 @@ local Library do
 
         local Window = {
             Logo = Data.Logo or Data.logo or "123748867365417",
+            LogoSize = Data.LogoSize or Data.logosize or Vector2New(100, 100),
             Size = Data.Size or Data.size or UDim2New(0, 681, 0, 480),
             FadeSpeed = Data.FadeSpeed or Data.fadespeed or 0.2,
             PagePadding = Data.PagePadding or Data.pagepadding or 19,
@@ -1741,7 +1742,7 @@ local Library do
                 ScaleType = Enum.ScaleType.Fit,
                 BorderColor3 = FromRGB(0, 0, 0),
                 Name = "\0",
-                Size = UDim2New(0, 45, 0, 45),
+                Size = UDim2New(0, Window.LogoSize.X, 0, Window.LogoSize.Y),
                 AnchorPoint = Vector2New(0.5, 0),
                 Image = LogoImage,
                 BackgroundTransparency = 1,
