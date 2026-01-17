@@ -756,6 +756,9 @@ local Library do
         local List = { }
         for _, Value in ipairs(listfiles(self.Folders.Configs)) do
             local FileName = Value:match("[^/\\]+$") or Value
+            if StringLower(FileName) == "autoload.txt" then
+                continue
+            end
             TableInsert(List, FileName)
         end
 
@@ -777,6 +780,202 @@ local Library do
             Element:Refresh(List)
             Element._CachedList = List
         end
+    end
+
+    Library.GetAutoloadPath = function(self)
+        return self.Folders.Configs .. "/autoload.txt"
+    end
+
+    Library.ApplyThemeFromFlags = function(self)
+        for Index in pairs(self.Theme) do
+            local ThemeFlag = self.Flags["Theme" .. Index]
+            if ThemeFlag and ThemeFlag.Color then
+                self.Theme[Index] = ThemeFlag.Color
+                self:ChangeTheme(Index, ThemeFlag.Color)
+            end
+        end
+    end
+
+    Library.SetAutoloadConfig = function(self, Config)
+        if not Config or Config == "" then
+            return
+        end
+
+        if not isfolder(self.Folders.Configs) then
+            makefolder(self.Folders.Configs)
+        end
+
+        writefile(self:GetAutoloadPath(), Config)
+        self:Notification("Autoload", "Set to " .. Config, 3)
+    end
+
+    Library.ClearAutoloadConfig = function(self)
+        local Path = self:GetAutoloadPath()
+        if isfile(Path) then
+            delfile(Path)
+        end
+        self:Notification("Autoload", "Cleared", 3)
+    end
+
+    Library.LoadAutoloadConfig = function(self)
+        local Path = self:GetAutoloadPath()
+        if not isfile(Path) then
+            return
+        end
+
+        local Name = readfile(Path)
+        Name = StringGSub(Name or "", "^%s+", "")
+        Name = StringGSub(Name or "", "%s+$", "")
+
+        if Name == "" then
+            return
+        end
+
+        local ConfigPath = self.Folders.Configs .. "/" .. Name
+        if not isfile(ConfigPath) then
+            return
+        end
+
+        self:LoadConfig(readfile(ConfigPath))
+        self:Thread(function()
+            task.wait(0.1)
+            self:ApplyThemeFromFlags()
+        end)
+    end
+
+    Library.AddDefaultSettings = function(self, Window)
+        if not Window or Window._HasDefaultSettings then
+            return
+        end
+
+        Window._HasDefaultSettings = true
+
+        local SettingsPage = Window:Page({Icon = "72974659157165", Search = false})
+        local SettingsSub = SettingsPage:SubPage({Name = "Settings"})
+
+        local ThemeSection = SettingsSub:Section({Name = "Theme", Side = "Right"})
+        for Index, Value in pairs(self.Theme) do
+            ThemeSection:Label(Index, "Left"):Colorpicker({
+                Name = Index,
+                Flag = "Theme" .. Index,
+                Default = Value,
+                Callback = function(NewValue)
+                    self.Theme[Index] = NewValue
+                    self:ChangeTheme(Index, NewValue)
+                end
+            })
+        end
+
+        local ConfigsSection = SettingsSub:Section({Name = "Configs", Side = "Left"})
+        local ConfigName = ""
+        local ConfigSelected
+
+        local ConfigsDropdown = ConfigsSection:Dropdown({
+            Name = "Configs",
+            Flag = "ConfigsList",
+            Items = { },
+            Multi = false,
+            MaxSize = 80,
+            Callback = function(Value)
+                ConfigSelected = Value
+            end
+        })
+
+        ConfigsSection:Textbox({
+            Name = "Config Name",
+            Default = "",
+            Flag = "ConfigName",
+            Placeholder = "my_config",
+            Callback = function(Value)
+                ConfigName = Value
+            end
+        })
+
+        ConfigsSection:Button({
+            Name = "Load Config",
+            Callback = function()
+                if not ConfigSelected then
+                    self:Notification("Error", "No config selected", 2)
+                    return
+                end
+
+                local Path = self.Folders.Configs .. "/" .. ConfigSelected
+                if isfile(Path) then
+                    self:LoadConfig(readfile(Path))
+                    self:Thread(function()
+                        task.wait(0.1)
+                        self:ApplyThemeFromFlags()
+                    end)
+                    self:Notification("Loaded", "Loaded config " .. ConfigSelected, 3)
+                end
+            end
+        }):SubButton({
+            Name = "Save Config",
+            Callback = function()
+                if not ConfigSelected then
+                    self:Notification("Error", "Select a config to overwrite", 2)
+                    return
+                end
+                self:SaveConfig(ConfigSelected)
+            end
+        })
+
+        ConfigsSection:Button({
+            Name = "Create Config",
+            Callback = function()
+                if ConfigName == "" then
+                    self:Notification("Error", "Please enter a name", 2)
+                    return
+                end
+
+                if not isfolder(self.Folders.Configs) then
+                    makefolder(self.Folders.Configs)
+                end
+
+                local Path = self.Folders.Configs .. "/" .. ConfigName .. ".json"
+                if not isfile(Path) then
+                    writefile(Path, self:GetConfig())
+                    self:RefreshConfigsList(ConfigsDropdown)
+                    self:Notification("Saved", "Created config " .. ConfigName, 3)
+                else
+                    self:Notification("Error", "Config already exists", 3)
+                end
+            end
+        }):SubButton({
+            Name = "Delete Config",
+            Callback = function()
+                if not ConfigSelected then
+                    self:Notification("Error", "No config selected", 2)
+                    return
+                end
+                self:DeleteConfig(ConfigSelected)
+                self:RefreshConfigsList(ConfigsDropdown)
+            end
+        })
+
+        ConfigsSection:Button({
+            Name = "Set Autoload",
+            Callback = function()
+                if not ConfigSelected then
+                    self:Notification("Error", "No config selected", 2)
+                    return
+                end
+                self:SetAutoloadConfig(ConfigSelected)
+            end
+        }):SubButton({
+            Name = "Clear Autoload",
+            Callback = function()
+                self:ClearAutoloadConfig()
+            end
+        })
+
+        self:RefreshConfigsList(ConfigsDropdown)
+
+        self:Thread(function()
+            task.wait(0.2)
+            self:RefreshConfigsList(ConfigsDropdown)
+            self:LoadAutoloadConfig()
+        end)
     end
 
     Library.ChangeItemTheme = function(self, Item, Properties)
@@ -1751,7 +1950,7 @@ local Library do
                 ZIndex = 3,
                 BorderSizePixel = 0,
                 BackgroundColor3 = FromRGB(255, 255, 255)
-            })  Items["Logo"]:AddToTheme({ImageColor3 = "Image"})
+            })
 
             Items["Shadow2"] = Instances:Create("ImageLabel", {
                 Parent = Items["Logo"].Instance,
@@ -1769,7 +1968,7 @@ local Library do
                 ZIndex = 2,
                 BorderSizePixel = 0,
                 SliceCenter = RectNew(Vector2New(112, 112), Vector2New(147, 147))
-            })  Items["Shadow2"]:AddToTheme({ImageColor3 = "Image"})
+            })
 
             Instances:Create("Frame", {
                 Parent = Items["Sidebar"].Instance,
@@ -1909,8 +2108,11 @@ local Library do
 
         Window.Items = Items
 
-        Window:SetOpen(true)
-        return setmetatable(Window, Library)
+        local WindowObject = setmetatable(Window, Library)
+        Library:AddDefaultSettings(WindowObject)
+
+        WindowObject:SetOpen(true)
+        return WindowObject
     end
 
     Library.Seperator = function(self)
@@ -1953,7 +2155,7 @@ local Library do
                 ZIndex = 2,
                 BorderSizePixel = 0,
                 BackgroundColor3 = FromRGB(255, 255, 255)
-            })  Items["Inactive"]:AddToTheme({ImageColor3 = "Image"})
+            })
 
             Items["PageContent"] = Instances:Create("Frame", {
                 Parent = Page.Window.Items["Inline"].Instance,
@@ -3447,7 +3649,7 @@ local Library do
                 ZIndex = 4,
                 BorderSizePixel = 0,
                 BackgroundColor3 = FromRGB(255, 255, 255)
-            })  Items["OpenIcon"]:AddToTheme({ImageColor3 = "Image"})
+            })
         end
 
         local Debounce = false
