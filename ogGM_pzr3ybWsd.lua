@@ -213,8 +213,8 @@ local Library do
             ["Text"] = FromRGB(255, 255, 255),
             ["Element"] =  FromRGB(11, 11, 11),
             ["Image"] =  FromRGB(255, 255, 255),
-            ["Accent"] = FromRGB(65, 16, 181),
-            ["Light Accent"] = FromRGB(139, 6, 255),
+            ["Accent"] = FromRGB(176, 78, 255),
+            ["Light Accent"] = FromRGB(255, 105, 180),
             ["Border"] = FromRGB(24, 24, 24)
         }
     }
@@ -1364,7 +1364,7 @@ local Library do
                 BackgroundTransparency = 1,
                 Position = UDim2New(0.5, 0, 0.5, 0),
                 SliceScale = 0.6000000238418579,
-                ImageColor3 = FromRGB(181, 116, 16),
+                ImageColor3 = FromRGB(176, 78, 255),
                 Size = UDim2New(1, 15, 1, 15),
                 BackgroundColor3 = FromRGB(255, 255, 255)
             })  Items["Shadow"]:AddToTheme({ImageColor3 = "Accent"})
@@ -2176,7 +2176,7 @@ local Library do
                 BackgroundTransparency = 1,
                 Position = UDim2New(0.5, 0, 0.5, 0),
                 SliceScale = 0.6000000238418579,
-                ImageColor3 = FromRGB(181, 116, 16),
+                ImageColor3 = FromRGB(176, 78, 255),
                 Size = UDim2New(1, 30, 1, 30),
                 BackgroundColor3 = FromRGB(255, 255, 255)
             })  Items["Shadow"]:AddToTheme({ImageColor3 = "Accent"})
@@ -2201,7 +2201,7 @@ local Library do
                 ZIndex = 2,
                 BorderSizePixel = 0,
                 CanvasSize = UDim2New(0, 0, 0, 0),
-                ScrollBarImageColor3 = FromRGB(181, 116, 16),
+                ScrollBarImageColor3 = FromRGB(176, 78, 255),
                 MidImage = Library:GetImage("Scrollbar"),
                 BorderColor3 = FromRGB(0, 0, 0),
                 ScrollBarThickness = 2,
@@ -2235,7 +2235,7 @@ local Library do
                 ZIndex = 2,
                 BorderSizePixel = 0,
                 CanvasSize = UDim2New(0, 0, 0, 0),
-                ScrollBarImageColor3 = FromRGB(181, 116, 16),
+                ScrollBarImageColor3 = FromRGB(176, 78, 255),
                 MidImage = Library:GetImage("Scrollbar"),
                 BorderColor3 = FromRGB(0, 0, 0),
                 ScrollBarThickness = 2,
@@ -2546,7 +2546,7 @@ local Library do
                 BackgroundTransparency = 1,
                 Position = UDim2New(0.5, 0, 0.5, 0),
                 SliceScale = 0.6000000238418579,
-                ImageColor3 = FromRGB(181, 116, 16),
+                ImageColor3 = FromRGB(176, 78, 255),
                 Size = UDim2New(1, 15, 1, 15),
                 BackgroundColor3 = FromRGB(255, 255, 255)
             })  Items["Shadow"]:AddToTheme({ImageColor3 = "Accent"})
@@ -3148,12 +3148,12 @@ local Library do
                 BorderColor3 = FromRGB(0, 0, 0),
                 ZIndex = 5,
                 BorderSizePixel = 0,
-                BackgroundColor3 = FromRGB(181, 116, 16)
+                BackgroundColor3 = FromRGB(176, 78, 255)
             })  Items["Accent"]:AddToTheme({BackgroundColor3 = "Accent"})
 
             Items["Shadow"] = Instances:Create("ImageLabel", {
                 Parent = Items["Accent"].Instance,
-                ImageColor3 = FromRGB(181, 116, 16),
+                ImageColor3 = FromRGB(176, 78, 255),
                 ImageTransparency = 0.6800000071525574,
                 AnchorPoint = Vector2New(0.5, 0.5),
                 Image = "rbxassetid://112971167999062",
@@ -3184,12 +3184,12 @@ local Library do
                 Size = UDim2New(0, 15, 0, 15),
                 ZIndex = 5,
                 TextSize = 14,
-                BackgroundColor3 = FromRGB(181, 116, 16)
+                BackgroundColor3 = FromRGB(176, 78, 255)
             })  Items["Drag"]:AddToTheme({BackgroundColor3 = "Accent"})
 
             Items["Shadow2"] = Instances:Create("ImageLabel", {
                 Parent = Items["Drag"].Instance,
-                ImageColor3 = FromRGB(181, 116, 16),
+                ImageColor3 = FromRGB(176, 78, 255),
                 ImageTransparency = 0.6800000071525574,
                 AnchorPoint = Vector2New(0.5, 0.5),
                 Image = "rbxassetid://112971167999062",
@@ -3361,7 +3361,7 @@ local Library do
                 ZIndex = 25,
                 BorderSizePixel = 0,
                 CanvasSize = UDim2New(0, 0, 0, 0),
-                ScrollBarImageColor3 = FromRGB(181, 116, 16),
+                ScrollBarImageColor3 = FromRGB(176, 78, 255),
                 MidImage = Library:GetImage("Scrollbar"),
                 BorderColor3 = FromRGB(0, 0, 0),
                 ScrollBarThickness = 2,
@@ -4161,3 +4161,4 @@ end
 
 getgenv().Library = Library
 return Library
+
