@@ -2161,7 +2161,7 @@ local Library do
                 ZIndex = 2,
                 BorderSizePixel = 0,
                 BackgroundColor3 = FromRGB(255, 255, 255)
-            })
+            })  Items["Inactive"]:AddToTheme({ImageColor3 = "Image"})
 
             Items["PageContent"] = Instances:Create("Frame", {
                 Parent = Page.Window.Items["Inline"].Instance,
@@ -3655,7 +3655,7 @@ local Library do
                 ZIndex = 4,
                 BorderSizePixel = 0,
                 BackgroundColor3 = FromRGB(255, 255, 255)
-            })
+            })  Items["OpenIcon"]:AddToTheme({ImageColor3 = "Image"})
         end
 
         local Debounce = false
