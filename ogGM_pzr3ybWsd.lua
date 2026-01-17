@@ -213,8 +213,8 @@ local Library do
             ["Text"] = FromRGB(255, 255, 255),
             ["Element"] =  FromRGB(11, 11, 11),
             ["Image"] =  FromRGB(255, 255, 255),
-            ["Accent"] = FromRGB(181, 116, 16),
-            ["Light Accent"] = FromRGB(255, 156, 6),
+            ["Accent"] = FromRGB(115, 16, 181),
+            ["Light Accent"] = FromRGB(160, 6, 255),
             ["Border"] = FromRGB(24, 24, 24)
         }
     }
