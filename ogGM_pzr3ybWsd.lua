@@ -1,5 +1,5 @@
--- made by samet 
--- retarded niggers
+-- made by samet
+-- UI library
 -- https://discord.gg/VhvTd5HV8d
 
 if getgenv().Library then 
@@ -50,6 +50,7 @@ local Library do
     local TableRemove = table.remove
     local TableConcat = table.concat
     local TableClone = table.clone
+    local TableSort = table.sort
     local TableUnpack = table.unpack
 
     local StringFormat = string.format
@@ -193,13 +194,13 @@ local Library do
     Library.Sections.__index = Library.Sections
 
     -- Files
-    for Index, Value in Library.Folders do 
+    for _, Value in pairs(Library.Folders) do 
         if not isfolder(Value) then
             makefolder(Value)
         end
     end
 
-    for Index, Image in Library.Images do
+    for _, Image in pairs(Library.Images) do
         if not isfile(Library.Folders.Assets .. "/" .. Image[1]) then
             writefile(Library.Folders.Assets .. "/" .. Image[1], game:HttpGet(Image[2]))
         end
@@ -272,8 +273,8 @@ local Library do
                 return
             end
 
-            Tween:Pause()
-            self = nil
+            self.Tween:Cancel()
+            self.Tween = nil
         end
     end
 
@@ -290,7 +291,7 @@ local Library do
 
             setmetatable(NewItem, Instances)
 
-            for Property, Value in NewItem.Properties do
+            for Property, Value in pairs(NewItem.Properties) do
                 NewItem.Instance[Property] = Value
             end
 
@@ -579,12 +580,14 @@ local Library do
     end
 
     Library.Unload = function(self)
-        for Index, Value in self.Connections do 
-            Value.Connection:Disconnect()
+        for _, Value in ipairs(self.Connections) do 
+            if Value.Connection then
+                Value.Connection:Disconnect()
+            end
         end
 
-        for Index, Value in self.Threads do 
-            coroutine.close(Value)
+        for _, Value in ipairs(self.Threads) do 
+            pcall(coroutine.close, Value)
         end
 
         if self.Holder then 
@@ -596,13 +599,23 @@ local Library do
     end
 
     Library.Thread = function(self, Function)
-        local NewThread = coroutine.create(Function)
-        
-        coroutine.wrap(function()
-            coroutine.resume(NewThread)
-        end)()
+        local NewThread
+        NewThread = coroutine.create(function()
+            Function()
+
+            for Index, Value in ipairs(self.Threads) do
+                if Value == NewThread then
+                    TableRemove(self.Threads, Index)
+                    break
+                end
+            end
+        end)
 
         TableInsert(self.Threads, NewThread)
+        local Success, Result = coroutine.resume(NewThread)
+        if not Success then
+            warn(Result)
+        end
 
         return NewThread
     end
@@ -620,27 +633,34 @@ local Library do
     end
 
     Library.Connect = function(self, Event, Callback, Name)
-        Name = Name or StringFormat("Connection_%s_%s", self.UnnamedConnections + 1, HttpService:GenerateGUID(false))
+        if not Event or not Callback then
+            return
+        end
 
+        if not Name then
+            self.UnnamedConnections += 1
+            Name = StringFormat("Connection_%s_%s", self.UnnamedConnections, HttpService:GenerateGUID(false))
+        end
+
+        local Connection = Event:Connect(Callback)
         local NewConnection = {
             Event = Event,
             Callback = Callback,
             Name = Name,
-            Connection = nil
+            Connection = Connection
         }
-
-        Library:Thread(function()
-            NewConnection.Connection = Event:Connect(Callback)
-        end)
 
         TableInsert(self.Connections, NewConnection)
         return NewConnection
     end
 
     Library.Disconnect = function(self, Name)
-        for _, Connection in self.Connections do 
+        for Index, Connection in ipairs(self.Connections) do 
             if Connection.Name == Name then
-                Connection.Connection:Disconnect()
+                if Connection.Connection then
+                    Connection.Connection:Disconnect()
+                end
+                TableRemove(self.Connections, Index)
                 break
             end
         end
@@ -648,6 +668,7 @@ local Library do
 
     Library.NextFlag = function(self)
         local FlagNumber = self.UnnamedFlags + 1
+        self.UnnamedFlags = FlagNumber
         return StringFormat("Flag Number %s %s", FlagNumber, HttpService:GenerateGUID(false))
     end
 
@@ -661,7 +682,7 @@ local Library do
             Properties = Properties,
         }
 
-        for Property, Value in ThemeData.Properties do
+        for Property, Value in pairs(ThemeData.Properties) do
             if type(Value) == "string" then
                 Item[Property] = self.Theme[Value]
             else
@@ -677,7 +698,7 @@ local Library do
         local Config = { } 
 
         local Success, Result = self:SafeCall(function()
-            for Index, Value in self.Flags do 
+            for Index, Value in pairs(self.Flags) do 
                 if type(Value) == "table" and Value.Key then
                     Config[Index] = {Key = tostring(Value.Key), Mode = Value.Mode}
                 elseif type(Value) == "table" and Value.Color then
@@ -695,7 +716,7 @@ local Library do
         local Decoded = HttpService:JSONDecode(Config)
 
         local Success, Result = self:SafeCall(function()
-            for Index, Value in Decoded do 
+            for Index, Value in pairs(Decoded) do 
                 local SetFunction = self.SetFlags[Index]
 
                 if not SetFunction then
@@ -728,28 +749,33 @@ local Library do
     end
 
     Library.RefreshConfigsList = function(self, Element)
-        local CurrentList = { }
-        local List = { }
-
-        local ConfigFolderName = StringGSub(self.Folders.Configs, self.Folders.Directory .. "/", "")
-
-        for Index, Value in listfiles(self.Folders.Configs) do
-            local FileName = StringGSub(Value, self.Folders.Directory .. "\\" .. ConfigFolderName .. "\\", "")
-            List[Index] = FileName
+        if not Element or not Element.Refresh then
+            return
         end
 
-        local IsNew = #List ~= CurrentList
+        local List = { }
+        for _, Value in ipairs(listfiles(self.Folders.Configs)) do
+            local FileName = Value:match("[^/\\]+$") or Value
+            TableInsert(List, FileName)
+        end
+
+        TableSort(List)
+
+        local CachedList = Element._CachedList
+        local IsNew = not CachedList or #List ~= #CachedList
 
         if not IsNew then
             for Index = 1, #List do
-                if List[Index] ~= CurrentList[Index] then
+                if List[Index] ~= CachedList[Index] then
                     IsNew = true
                     break
                 end
             end
-        else
-            CurrentList = List
-            Element:Refresh(CurrentList)
+        end
+
+        if IsNew then
+            Element:Refresh(List)
+            Element._CachedList = List
         end
     end
 
@@ -769,8 +795,8 @@ local Library do
     Library.ChangeTheme = function(self, Theme, Color)
         self.Theme[Theme] = Color
 
-        for _, Item in self.ThemeItems do
-            for Property, Value in Item.Properties do
+        for _, Item in ipairs(self.ThemeItems) do
+            for Property, Value in pairs(Item.Properties) do
                 if type(Value) == "string" and Value == Theme then
                     Item.Item[Property] = Color
                 end
@@ -843,7 +869,7 @@ local Library do
                 AutomaticSize = Enum.AutomaticSize.XY,
                 TextSize = 14,
                 BackgroundColor3 = FromRGB(255, 255, 255)
-            })  Items["Title"]:AddToTheme({BackgroundColor3 = "Text"})
+            })  Items["Title"]:AddToTheme({TextColor3 = "Text"})
 
             Instances:Create("UIPadding", {
                 Parent = Items["Notification"].Instance,
@@ -876,7 +902,7 @@ local Library do
         Items["Notification"].Instance.BackgroundTransparency = 1
         local OldSize = Items["Notification"].Instance.AbsoluteSize
         Items["Notification"].Instance.Size = UDim2New(0, 0, 0, 0)
-        for Index, Value in Items["Notification"].Instance:GetDescendants() do
+        for _, Value in ipairs(Items["Notification"].Instance:GetDescendants()) do
             if Value:IsA("UIStroke") then 
                 Value.Transparency = 1
             elseif Value:IsA("TextLabel") then 
@@ -891,7 +917,7 @@ local Library do
             
             task.wait(0.06)
 
-            for Index, Value in Items["Notification"].Instance:GetDescendants() do
+            for _, Value in ipairs(Items["Notification"].Instance:GetDescendants()) do
                 if Value:IsA("UIStroke") then
                     Tween:Create(Value, nil, {Transparency = 0}, true)
                 elseif Value:IsA("TextLabel") then
@@ -906,7 +932,7 @@ local Library do
             end
 
             task.delay(Duration + 0.1, function()
-                for Index, Value in Items["Notification"].Instance:GetDescendants() do
+                for _, Value in ipairs(Items["Notification"].Instance:GetDescendants()) do
                     if Value:IsA("UIStroke") then
                         Tween:Create(Value, nil, {Transparency = 1}, true)
                     elseif Value:IsA("TextLabel") then
@@ -1462,8 +1488,9 @@ local Library do
 
         function Colorpicker:Set(Color, Alpha)
             if type(Color) == "table" then 
-                Color = FromRGB(Color[1], Color[2], Color[3])
-                Alpha = Color[4]
+                local ColorTable = Color
+                Color = FromRGB(ColorTable[1], ColorTable[2], ColorTable[3])
+                Alpha = ColorTable[4]
             elseif type(Color) == "string" then 
                 Color = FromHex(Color)
             end
